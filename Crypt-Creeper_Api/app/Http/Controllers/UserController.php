@@ -23,6 +23,7 @@ class UserController extends Controller
             'name' => 'required|min:3|max:10',
             'email' => 'required|email|max:30',
             'password' => ['required', 'min:4', 'max:8', Password::min(4)->mixedCase()],
+            'faction_id' => 'required|digits_between:1,8|exists:factions,id',
             'profile_pic' => 'required'
         ]);
 
@@ -36,6 +37,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = $request->password;
+        $user->faction_id = $request->faction_id;
         $user->profile_pic = $request->profile_pic;
 
         $user->save();

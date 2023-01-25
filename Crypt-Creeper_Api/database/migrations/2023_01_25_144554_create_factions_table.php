@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('faction', function (Blueprint $table) {
+        Schema::create('factions', function (Blueprint $table) {
             $table->id();
             $table->text('name');
             $table->text('icon');
-        });
-
-        Schema::table('user', function (Blueprint $table) {
-            $table->foreignId('faction_id');
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('faction');
+        Schema::dropIfExists('factions');
     }
 };
