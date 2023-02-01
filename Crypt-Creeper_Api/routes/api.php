@@ -21,4 +21,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('/user')->group(function() {
     Route::put('/create', [UserController::class, 'create']);
+    Route::post('/login', [UserController::class, 'login'], function (Request $request) {
+        $token = $request->user()->createToken($request->token_name);
+     
+        return ['token' => $token->plainTextToken];
+    });
 });
+
+

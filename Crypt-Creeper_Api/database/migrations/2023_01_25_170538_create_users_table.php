@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 10)->unique();
             $table->string('email', 30)->unique();
-            $table->string('password', 8);
+            $table->string('password');
             $table->foreignId('faction_id')->constrained();
             $table->text('profile_pic');
             $table->rememberToken();
