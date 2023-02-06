@@ -18,7 +18,7 @@ class UserController extends Controller
         $validator = Validator::make(json_decode($json, true),[
             'name' => 'required|min:3|max:10',
             'email' => 'required|email|max:30',
-            'password' => ['required'],
+            'password' => ['required', 'min:4', 'max:8', Password::min(4)->mixedCase()],
             'faction_id' => 'required|digits_between:1,8|exists:factions,id',
             'profile_pic' => 'required'
         ]);
@@ -46,7 +46,7 @@ class UserController extends Controller
         $data = json_decode($json);
 
         $validator = Validator::make(json_decode($json, true),[
-            'name' => 'required|min:3|max:10',
+            'name' => 'required',
             'password' => 'required'
         ]);
 
@@ -66,15 +66,16 @@ class UserController extends Controller
                     $token = $user->createToken($user->name);
  
                     return ['token' => $token->plainTextToken];
-                    return "Todo piola";
+                    return "Token creado correctamente";
                 }
 
             } catch(\Exception $e) {
-                return "Ha ocurrido un error";
+                return response([
+                    "message" => "Ha ocurrido un error"
+                ]);
             }
         }
         return response()->json($data, 201);
-        
     }   
 
     public function logout(Request $request) {
