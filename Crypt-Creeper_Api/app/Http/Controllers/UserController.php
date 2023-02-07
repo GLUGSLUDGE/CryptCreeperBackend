@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use App\Models\User;
+use App\Models\PersonalAccessToken;
+
 
 class UserController extends Controller
 {
@@ -83,4 +85,47 @@ class UserController extends Controller
     }
 
     // TODO: Funciones de editar usuario(nombre, contraseña y foto de perfil) y eliminar cuenta
+
+
+    public function changeName(Request $request){
+        
+        $json = $request->getContent();
+        $data = json_decode($json);
+
+        $validator = Validator::make(json_decode($json, true),[
+            'name'=> 'required|min:3|max:10',
+            
+        
+        ]);
+
+        if ($validator ->fails()){
+            return response()->json(['Errores' => $validator->errors()],400);
+        }
+        $token = $request->input('token');
+        $token = $request->input('token');
+        $name = $request->input('name');
+
+        try{
+            $token = PersonalAccessToken::where('token',  $request('token'))->first();
+
+            if (!$token) {
+                return response()->json([
+                    'errors' => [
+                        'token' => ['El token es inválido o ha expirado']
+                    ]
+                ], 401);
+            }
+            $user = $token->tokenable;
+            $user->name = $request->input('name');
+            $user->name = $request->input('name');
+            $user ->save();
+       } catch(\Exception $e) {
+        return response([
+            "message" => "Ha ocurrido un error"
+        ]);
+        }
+       return response()->json(['message' => 'Nombre actualizado con éxito']);
+    
+        
+    }
 }
