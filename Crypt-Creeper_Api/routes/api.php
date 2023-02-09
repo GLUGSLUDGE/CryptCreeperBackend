@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\ValidateToken;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +21,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('/user')->group(function() {
-    Route::put('/create', [UserController::class, 'create']);
-    Route::post('/login', [UserController::class, 'login']);
+    Route::put('/create',[UserController::class, 'create']);
+    Route::post('/login',[UserController::class, 'login']);
+    Route::post('/change-name',[UserController::class,'changeName'])->middleware('auth:sanctum');
+    Route::post('/change-password',[UserController::class,'changePassword'])->middleware('auth:sanctum');
+    Route::post('/change-photo', [UserController::class,'changePhoto'])->middleware('auth:sanctum');
+    Route::post('/logout', [UserController::class,'logout'])->middleware('auth:sanctum');
+    Route::delete('/delate-user', [UserController::class,'daleteUser'])->middleware('auth:sanctum');
+  
+    
+    
 });
 
 
