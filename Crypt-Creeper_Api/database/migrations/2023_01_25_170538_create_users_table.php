@@ -13,13 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('users');
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name', 10)->unique();
             $table->string('email', 30)->unique();
             $table->string('password');
             $table->foreignId('faction_id')->constrained();
-            $table->text('profile_pic');
+            $table->string('profile_pic', 100);
             $table->rememberToken();
             $table->timestamps();
         });

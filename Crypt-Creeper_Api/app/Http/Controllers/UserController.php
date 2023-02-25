@@ -60,21 +60,22 @@ class UserController extends Controller
         } else {
 
             try {
+                
                 $user = User::where('name', 'like', $data->name)->firstOrFail();
 
                 if(!Hash::check($data->password, $user->password)) {
-                    return "La contraseña es incorrecta";
+                    return response([ "message" => "The Username or password are incorrect"]);
                 } else {
                     $user->tokens()->delete();
                     $token = $user->createToken($user->name);
  
                     return ['token' => $token->plainTextToken];
-                    return "Token creado correctamente";
+                    return "Token created successfully";
                 }
 
             } catch(\Exception $e) {
                 return response([
-                    "message" => "Ha ocurrido un error"
+                    "message" => "The Username or password are incorrect"
                 ]);
             }
         }
@@ -84,11 +85,11 @@ class UserController extends Controller
     public function logout(Request $request) {
         
         $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Sesión cerrada con éxito']);
+        return response()->json(['message' => 'closed session']);
         
     }
     
-// TODO: Funciones de editar usuario(nombre, contraseña y foto de perfil) y eliminar cuenta
+// TODO: Functions to edit user (name, password and profile picture) and delete account
    
 
 //  CAMBIAR NOMBRE
@@ -116,11 +117,11 @@ class UserController extends Controller
         catch(\Exception $e) 
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-       return response()->json(['message' => 'Nombre actualizado con éxito']);
+       return response()->json(['message' => 'Name updated successfully']);
     }
 //  CAMBIAR CONTRSEÑA
     public function changePassword(Request $request)
@@ -144,14 +145,14 @@ class UserController extends Controller
             $user = $request->user();
             if(!Hash::check($data->password, $user->password)) {
                 return response([
-                    "message" =>"La contraseña es incorrecta"
+                    "message" =>"The password is incorrect"
                 ]);
             }
             else
             {
-                if(!$data->new_password = $data->repit_new_password )
+                if($data->new_password !== $data->repit_new_password )
                 {
-                    return response()->json(['Las contraseñas no coimciden'],401);
+                    return response()->json(['Passwords do not match'],401);
 
                 }
                 else
@@ -164,11 +165,11 @@ class UserController extends Controller
         catch(\Exception $e) 
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-        return response()->json(['message' => 'Contraña cambiada correctamente ']);
+        return response()->json(['message' => 'Password changed correctly']);
     }
 //  CAMBIAR FOTO
     public function changePhoto(Request $request)
@@ -192,11 +193,11 @@ class UserController extends Controller
         catch(\Exception $e)
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-        return response()->json(['message' => 'Foto cambiada correctamente ']);
+        return response()->json(['message' => 'Photo changed successfully']);
     }
 //  BORRAR CUENTA
     public function daleteUser(Request $request)
@@ -218,7 +219,7 @@ class UserController extends Controller
             if(!Hash::check($data->password, $user->password))
             {
                 return response([
-                    "message" =>"La contraseña es incorrecta"
+                    "message" => "The password is incorrect"
                 ]);
             }
             else
@@ -229,11 +230,11 @@ class UserController extends Controller
         catch(\Exception $e)
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-        return response()->json(['message' => 'Foto cambiada correctamente ']);
+        return response()->json(['message' => 'Photo changed correctly ']);
     }
 
 }
