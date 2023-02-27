@@ -82,6 +82,7 @@ class UserController extends Controller
             ], 422);
         } else {
             try {
+                
                 $user = User::where('name', 'like', $data->name)->firstOrFail();
 
                 if(!Hash::check($data->password, $user->password)) {
@@ -111,7 +112,7 @@ class UserController extends Controller
     public function logout(Request $request) {
         
         $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Sesión cerrada con éxito']);
+        return response()->json(['message' => 'closed session']);
         
     }
    
@@ -138,11 +139,11 @@ class UserController extends Controller
         catch(\Exception $e) 
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-       return response()->json(['message' => 'Nombre actualizado con éxito']);
+       return response()->json(['message' => 'Name updated successfully']);
     }
 
 //  CAMBIAR CONTRSEÑA
@@ -167,14 +168,14 @@ class UserController extends Controller
             $user = $request->user();
             if(!Hash::check($data->password, $user->password)) {
                 return response([
-                    "message" =>"La contraseña es incorrecta"
+                    "message" =>"The password is incorrect"
                 ]);
             }
             else
             {
-                if(!$data->new_password = $data->repit_new_password )
+                if($data->new_password !== $data->repit_new_password )
                 {
-                    return response()->json(['Las contraseñas no coimciden'],401);
+                    return response()->json(['Passwords do not match'],401);
 
                 }
                 else
@@ -187,11 +188,11 @@ class UserController extends Controller
         catch(\Exception $e) 
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-        return response()->json(['message' => 'Contraña cambiada correctamente ']);
+        return response()->json(['message' => 'Password changed correctly']);
     }
 
 //  CAMBIAR FOTO
@@ -216,11 +217,11 @@ class UserController extends Controller
         catch(\Exception $e)
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-        return response()->json(['message' => 'Foto cambiada correctamente ']);
+        return response()->json(['message' => 'Photo changed successfully']);
     }
 
 //  BORRAR CUENTA
@@ -243,7 +244,7 @@ class UserController extends Controller
             if(!Hash::check($data->password, $user->password))
             {
                 return response([
-                    "message" =>"La contraseña es incorrecta"
+                    "message" => "The password is incorrect"
                 ]);
             }
             else
@@ -254,11 +255,11 @@ class UserController extends Controller
         catch(\Exception $e)
         {
             return response([
-                "message" => "Ha ocurrido un error"
+                "message" => "An error has occurred"
             ]);
         }
 
-        return response()->json(['message' => 'Foto cambiada correctamente ']);
+        return response()->json(['message' => 'Photo changed correctly ']);
     }
 
 }
