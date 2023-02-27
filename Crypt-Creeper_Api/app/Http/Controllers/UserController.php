@@ -7,20 +7,20 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
-
-
 
 class UserController extends Controller
 {
-    // CREAR CUENTA
+//  CREAR CUENTA
     public function create(Request $request) {
         $json = $request->getContent();
         $data = json_decode($json);
 
         $validator = Validator::make(json_decode($json, true),[
-            'name' => 'required|min:3|max:10',
-            'email' => 'required|email|max:30',
+            'name' => 'required|min:3|max:10|unique:users,name',
+            'email' => 'required|email|max:30|unique:users,email',
             'password' => ['required', 'min:4', 'max:8', Password::min(4)->mixedCase()],
             'faction_id' => 'required|digits_between:1,8|exists:factions,id',
             'profile_pic' => 'required'
@@ -28,21 +28,44 @@ class UserController extends Controller
 
         if($validator->fails()) {
             return response()->json([
-                'Errores' => $validator->errors(),
+                'Errors' => $validator->errors(),
             ], 422);
-        };
+        } else {
+            $user = new User();
+            $user->name = $data->name;
+            $user->email = $data->email;
+            $user->password = Hash::make($data->password);
+            $user->faction_id = $data->faction_id;
+            // Recuperar la imagen en base64 desde la solicitud de entrada
+            $image_data = $data->profile_pic;
 
-        $user = new User();
-        $user->name = $data->name;
-        $user->email = $data->email;
-        $user->password = Hash::make($data->password);
-        $user->faction_id = $data->faction_id;
-        $user->profile_pic = $data->profile_pic;
+            // Convertir la cadena base64 a un archivo temporal
+            $temp_file = tempnam(sys_get_temp_dir(), 'img');
+            file_put_contents($temp_file, base64_decode($image_data));
 
-        $user->save();
+            // Crear un objeto UploadedFile a partir del archivo temporal
+            $file = new UploadedFile($temp_file, $data->name.'.png', null, null, true);
 
-        return response()->json($data, 201);
+            // Guardar los datos del archivo cargado en la base de datos
+            $user->profile_pic = $file->store('public/images');
+
+            try {
+                $user->save();
+                $token = $user->createToken($user->name);
+            } catch(Exception $e) {
+                return response([
+                    'message' => 'An error has ocurred trying to create an user'
+                ]);
+            }
+            
+            return response([
+                'Token' => $token->plainTextToken,
+                'message' => 'Token created successfully',
+                'User' => $data
+            ], 201);
+        }
     }
+
 //  INICIAR SESIÓN
     public function login(Request $request) {
         $json = $request->getContent();
@@ -55,42 +78,43 @@ class UserController extends Controller
 
         if($validator->fails()) {
             return response()->json([
-                'Errores' => $validator->errors(),
+                'Errors' => $validator->errors(),
             ], 422);
         } else {
-
             try {
                 $user = User::where('name', 'like', $data->name)->firstOrFail();
 
                 if(!Hash::check($data->password, $user->password)) {
-                    return "La contraseña es incorrecta";
+                    return response([
+                        'message' => 'The user or the password is incorrrect'
+                    ]);
                 } else {
                     $user->tokens()->delete();
                     $token = $user->createToken($user->name);
- 
-                    return ['token' => $token->plainTextToken];
-                    return "Token creado correctamente";
+                    
+                    return response([
+                        'Token' => $token->plainTextToken,
+                        'message' => 'Token created successfully'
+                    ]);
                 }
 
             } catch(\Exception $e) {
                 return response([
-                    "message" => "Ha ocurrido un error"
+                    "message" => "The user or the password are incorrect"
                 ]);
             }
         }
         return response()->json($data, 201);
     }   
-// CERRAR SESION
+
+//  CERRAR SESION
     public function logout(Request $request) {
         
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Sesión cerrada con éxito']);
         
     }
-    
-// TODO: Funciones de editar usuario(nombre, contraseña y foto de perfil) y eliminar cuenta
    
-
 //  CAMBIAR NOMBRE
     public function changeName(Request $request)
     {
@@ -99,19 +123,17 @@ class UserController extends Controller
 
         $validator = Validator::make(json_decode($json, true),[
             'name'=> 'required|min:3|max:10',
-            
         ]);
 
         if ($validator ->fails()){
             return response()->json(['Erros' => $validator->errors()],400);
-        }
+        } 
 
         try
         {
             $user = $request->user();
             $user->name = $request->input('name');
             $user ->save();
-
         }
         catch(\Exception $e) 
         {
@@ -122,6 +144,7 @@ class UserController extends Controller
 
        return response()->json(['message' => 'Nombre actualizado con éxito']);
     }
+
 //  CAMBIAR CONTRSEÑA
     public function changePassword(Request $request)
     {
@@ -170,6 +193,7 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Contraña cambiada correctamente ']);
     }
+
 //  CAMBIAR FOTO
     public function changePhoto(Request $request)
     {
@@ -198,8 +222,9 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Foto cambiada correctamente ']);
     }
+
 //  BORRAR CUENTA
-    public function daleteUser(Request $request)
+    public function deleteUser(Request $request)
     {
         $json = $request->getContent();
         $data = json_decode($json);
