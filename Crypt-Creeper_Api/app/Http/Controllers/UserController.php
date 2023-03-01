@@ -94,7 +94,8 @@ class UserController extends Controller
                     
                     return response([
                         'Token' => $token->plainTextToken,
-                        'message' => 'Token created successfully'
+                        'message' => 'Token created successfully',
+                        'User' => $user
                     ]);
                 }
 
