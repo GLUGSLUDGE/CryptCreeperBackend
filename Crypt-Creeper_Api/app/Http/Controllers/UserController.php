@@ -208,10 +208,20 @@ class UserController extends Controller
         {
             return response()->json(['Erros' => $validator ->errors()],400);
         }
+          
         try
         {
             $user = $request->user();
-            $user ->profile_pic = $request->input('profile_pic');
+            $image_data = $data->profile_pic;
+            $temp_file = tempnam(sys_get_temp_dir(), 'img');
+            file_put_contents($temp_file, base64_decode($image_data));
+            
+            $file = new UploadedFile($temp_file, $user->name.'.png', null, null, true);
+
+            if ($user->profile_pic) {
+                Storage::delete($user->profile_pic);
+            }
+            $user->profile_pic = $file->store('public/images');  
             $user->save();
         }
         catch(\Exception $e)
