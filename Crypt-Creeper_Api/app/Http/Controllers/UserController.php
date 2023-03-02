@@ -45,9 +45,11 @@ class UserController extends Controller
 
             // Crear un objeto UploadedFile a partir del archivo temporal
             $file = new UploadedFile($temp_file, $data->name.'.png', null, null, true);
-
+            $url = Storage::url($data->name.'.png');
+            $finalUrl = 'http://127.0.0.1:8000'.$url;
             // Guardar los datos del archivo cargado en la base de datos
-            $user->profile_pic = $file->store('public/images');
+            $file->storeAs('public', $user->name.'.png');
+            $user->profile_pic = $finalUrl;
 
             try {
                 $user->save();
@@ -61,7 +63,7 @@ class UserController extends Controller
             return response([
                 'Token' => $token->plainTextToken,
                 'message' => 'Token created successfully',
-                'User' => $data
+                'User' => $user
             ], 201);
         }
     }

@@ -45,12 +45,12 @@ class PlayController extends Controller
 //  GET HIGHER POINTS FROM AN USER
     public function get_higher_points(Request $request) {
         $user = $request->user();
-        $maxPoints = Play::select(DB::raw('MAX(points) as High_Score'))
+        $maxPoints = Play::select(DB::raw('MAX(points) as SCORE'))
             ->where('user_id', $user->id)
             ->get();
 
         return response([
-            'Puntuación máxima' => $maxPoints
+            'MAXSCORE' => $maxPoints
         ]);
         
     }
