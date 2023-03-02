@@ -28,7 +28,7 @@ Route::prefix('/user')->group(function() {
     Route::post('/change-password',[UserController::class,'changePassword'])->middleware('auth:sanctum');
     Route::post('/change-photo', [UserController::class,'changePhoto'])->middleware('auth:sanctum');
     Route::post('/logout', [UserController::class,'logout'])->middleware('auth:sanctum');
-    Route::delete('/delate-user', [UserController::class,'daleteUser'])->middleware('auth:sanctum');
+    Route::delete('/delete-user', [UserController::class,'deleteUser'])->middleware('auth:sanctum');
 });
 
 Route::prefix('/play')->group(function() {

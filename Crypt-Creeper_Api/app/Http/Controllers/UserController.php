@@ -232,7 +232,7 @@ class UserController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Photo changed successfully']);
+        return response()->json(['message' => 'Photo changed correctly']);
     }
 
 //  BORRAR CUENTA
@@ -259,7 +259,10 @@ class UserController extends Controller
                 ]);
             }
             else
-            {
+            {   
+                if ($user->profile_pic) {
+                Storage::delete($user->profile_pic);
+                }
                 $user->delete();
             }
         }
@@ -270,7 +273,7 @@ class UserController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Photo changed correctly ']);
+        return response()->json(['message' => 'User Delete']);
     }
 
 }
