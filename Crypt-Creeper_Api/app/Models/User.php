@@ -15,6 +15,9 @@ class User extends Authenticatable
     public function factions() {
         return $this->hasOne(Faction::class);
     }
+    public function plays() {
+        return $this->hasMany(Plays::class);
+    }
     /**
      * The attributes that are mass assignable.
      *

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PlayController;
 use App\Http\Middleware\ValidateToken;
 
 /*
@@ -28,9 +29,9 @@ Route::prefix('/user')->group(function() {
     Route::post('/change-photo', [UserController::class,'changePhoto'])->middleware('auth:sanctum');
     Route::post('/logout', [UserController::class,'logout'])->middleware('auth:sanctum');
     Route::delete('/delate-user', [UserController::class,'daleteUser'])->middleware('auth:sanctum');
-  
-    
-    
 });
 
-
+Route::prefix('/play')->group(function() {
+    Route::post('/save_points',[PlayController::class, 'save_points'])->middleware('auth:sanctum');
+    Route::get('/get_higher_points',[PlayController::class, 'get_higher_points'])->middleware('auth:sanctum');
+});
