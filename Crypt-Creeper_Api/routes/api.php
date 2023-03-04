@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PlayController;
+use App\Http\Middleware\ValidateToken;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('/user')->group(function() {
-    Route::put('/create', [UserController::class, 'create']);
-    Route::post('/login', [UserController::class, 'login']);
+    Route::put('/create',[UserController::class, 'create']);
+    Route::post('/login',[UserController::class, 'login']);
+    Route::post('/change-name',[UserController::class,'changeName'])->middleware('auth:sanctum');
+    Route::post('/change-password',[UserController::class,'changePassword'])->middleware('auth:sanctum');
+    Route::post('/change-photo', [UserController::class,'changePhoto'])->middleware('auth:sanctum');
+    Route::post('/logout', [UserController::class,'logout'])->middleware('auth:sanctum');
+    Route::delete('/delete-user', [UserController::class,'deleteUser'])->middleware('auth:sanctum');
 });
 
-
+Route::prefix('/play')->group(function() {
+    Route::post('/save_points',[PlayController::class, 'save_points'])->middleware('auth:sanctum');
+    Route::get('/get_higher_points',[PlayController::class, 'get_higher_points'])->middleware('auth:sanctum');
+});
