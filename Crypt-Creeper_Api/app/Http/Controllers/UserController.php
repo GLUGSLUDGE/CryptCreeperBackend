@@ -163,14 +163,14 @@ class UserController extends Controller
 
         if ($validator ->fails())
         {
-            return response()->json(['Erros' => $validator ->errors()],400);
+            return response()->json(['Errors' => $validator ->errors()],400);
         }
 
         try
         {
             $user = $request->user();
             if(!Hash::check($data->password, $user->password)) {
-                return response([
+                return response()->json([
                     "message" =>"The password is incorrect"
                 ]);
             }
@@ -178,7 +178,7 @@ class UserController extends Controller
             {
                 if($data->new_password !== $data->repit_new_password )
                 {
-                    return response()->json(['Passwords do not match'],401);
+                    return response()->json(["message"=>"Passwords do not match"],401);
 
                 }
                 else
@@ -209,7 +209,7 @@ class UserController extends Controller
         ]);
         if ($validator ->fails())
         {
-            return response()->json(['Erros' => $validator ->errors()],400);
+            return response()->json(['Errors' => $validator ->errors()],400);
         }
           
         try
@@ -221,11 +221,14 @@ class UserController extends Controller
             
             $file = new UploadedFile($temp_file, $user->name.'.png', null, null, true);
 
-            if ($user->profile_pic) {
-                Storage::delete($user->profile_pic);
-            }
-            $user->profile_pic = $file->store('public/images');  
-            $user->save();
+            
+            
+            $file->storeAs('public', $user->name.'.png');
+            $url = Storage::url($user->name.'.png');
+            $finalUrl = 'http://127.0.0.1:8000'.$url;
+            $user->profile_pic = $finalUrl;
+            $user->save();  
+            
         }
         catch(\Exception $e)
         {
