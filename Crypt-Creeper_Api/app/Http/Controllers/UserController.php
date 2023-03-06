@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -109,7 +110,33 @@ class UserController extends Controller
             }
         }
         return response()->json($data, 201);
-    }   
+    }  
+// DATOS DE USUARIO
+    public function getUserData (Request $request){
+
+        $user = $request->user();
+        return response()->json([
+            'name'=> $user->name,
+            'profile_pic' =>$user-> profile_pic,
+            'faction_id' => $user-> faction_id
+        ]);
+
+    }
+
+    // USER TOP SCORES
+    public function getTop10(Request $request){
+        
+        $topScores = DB::table('plays')
+            ->select('user_id', 'points')
+            ->orderByDesc('points')
+            ->limit(8)
+            ->get();
+
+    return response()->json([
+        'score '=> $topScores]);
+    
+
+    }
 
 //  CERRAR SESION
     public function logout(Request $request) {
@@ -145,7 +172,6 @@ class UserController extends Controller
                 "message" => "An error has occurred"
             ]);
         }
-
        return response()->json(['message' => 'Name updated successfully']);
     }
 
@@ -271,6 +297,7 @@ class UserController extends Controller
                 $user->delete();
             }
         }
+        
         catch(\Exception $e)
         {
             return response([
