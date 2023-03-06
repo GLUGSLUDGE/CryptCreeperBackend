@@ -54,4 +54,42 @@ class PlayController extends Controller
         ]);
         
     }
+    //abby - Get top 10 players
+    public function leaderboard(){
+        try{
+            $plays = DB::table('plays')
+            ->join('users', 'plays.user_id', '=', 'users.id')
+            ->join('factions', 'users.faction_id', '=', "factions.id")
+            ->select(DB::raw('user_id,MAX(points) as points'), 'users.name as username', 'factions.name as faction')
+            ->groupBy('user_id')
+            ->orderBy('points', 'desc')
+            ->limit(10)
+            ->get();
+        }catch(Exception $e){
+            return response([
+                'message' => "There was an error retrieving the leaderboard."
+            ], 500); 
+        }
+        return response([
+            'LEADERBOARD' => $plays
+        ]);
+    }
+    //abby - Faction leaderboards
+    public function factionleaderboard(){
+        try {
+            $plays = DB::table('plays')
+            ->join('users', 'plays.user_id', '=', 'users.id')
+            ->join('factions', 'users.faction_id', '=', "factions.id")
+            ->select(DB::raw('faction_id,SUM(points) as points'), 'factions.name')
+            ->groupBy('factions.id')
+            ->get();
+        } catch(Exception $e){
+            return response([
+                'message' => "There was an error retrieving the leaderboard."
+            ], 500);
+        }
+        return response([
+            'LEADERBOARD' => $plays
+        ], 200);
+    }
 }
