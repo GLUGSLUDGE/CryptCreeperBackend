@@ -34,4 +34,5 @@ Route::prefix('/user')->group(function() {
 Route::prefix('/play')->group(function() {
     Route::post('/save_points',[PlayController::class, 'save_points'])->middleware('auth:sanctum');
     Route::get('/get_higher_points',[PlayController::class, 'get_higher_points'])->middleware('auth:sanctum');
+    Route::get('/leaderboard',[PlayController::class, 'leaderboard']);
 });
