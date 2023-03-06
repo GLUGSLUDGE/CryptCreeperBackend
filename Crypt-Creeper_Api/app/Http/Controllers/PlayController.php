@@ -53,9 +53,9 @@ class PlayController extends Controller
             'MAXSCORE' => $maxPoints
         ]);
         
-    } //'card_user.id','cards.name','card_user.price','card_user.quantity')
+    }
     //abby - Get top 10 players
-    public function leaderboard(Request $request){
+    public function leaderboard(){
         $plays = DB::table('plays')
         ->join('users', 'plays.user_id', '=', 'users.id')
         ->join('factions', 'users.faction_id', '=', "factions.id")
@@ -63,6 +63,16 @@ class PlayController extends Controller
         ->groupBy('user_id')
         ->orderBy('points', 'desc')
         ->limit(10)
+        ->get();
+        return $plays;
+    }
+    //abby - Faction leaderboards
+    public function factionleaderboard(){
+        $plays = DB::table('plays')
+        ->join('users', 'plays.user_id', '=', 'users.id')
+        ->join('factions', 'users.faction_id', '=', "factions.id")
+        ->select(DB::raw('faction_id,SUM(points) as points'), 'factions.name')
+        ->groupBy('factions.id')
         ->get();
         return $plays;
     }
