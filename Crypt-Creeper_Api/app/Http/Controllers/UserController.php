@@ -124,7 +124,7 @@ class UserController extends Controller
     }
 
     // USER TOP SCORES
-    public function getTop10(Request $request){
+    public function getTop8(Request $request){
         
         $topScores = DB::table('plays')
             ->select('user_id', 'points')
@@ -294,6 +294,7 @@ class UserController extends Controller
                 if ($user->profile_pic) {
                 Storage::delete($user->profile_pic);
                 }
+                DB::table('plays')->where('user_id', $user->id)->delete();
                 $user->delete();
             }
         }
