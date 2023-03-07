@@ -25,7 +25,7 @@ Route::prefix('/user')->group(function() {
     Route::put('/create',[UserController::class, 'create']);
     Route::post('/login',[UserController::class, 'login']);
     Route::get('/getUserData',[UserController::class,'getUserData'])->middleware('auth:sanctum');
-    Route::get('/getTop10',[UserController::class,'getTop10'])->middleware('auth:sanctum');
+    Route::get('/getTop8',[UserController::class,'getTop8'])->middleware('auth:sanctum');
     Route::post('/change-name',[UserController::class,'changeName'])->middleware('auth:sanctum');
     Route::post('/change-password',[UserController::class,'changePassword'])->middleware('auth:sanctum');
     Route::post('/change-photo', [UserController::class,'changePhoto'])->middleware('auth:sanctum');
