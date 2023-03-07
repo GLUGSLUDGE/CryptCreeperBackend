@@ -18,6 +18,9 @@ class User extends Authenticatable
     public function plays() {
         return $this->hasMany(Plays::class);
     }
+    public function achievements() {
+        return $this->hasMany(Achievement::class);
+    }
     /**
      * The attributes that are mass assignable.
      *
