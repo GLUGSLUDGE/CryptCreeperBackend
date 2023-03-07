@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PlayController;
+use App\Http\Controllers\AchievementController;
 use App\Http\Middleware\ValidateToken;
 
 /*
@@ -41,4 +42,11 @@ Route::prefix('/play')->group(function() {
 
 Route::prefix('factions')->group(function() {
     Route::get('/leaderboard',[PlayController::class, 'factionleaderboard']);
+});
+
+Route::prefix('achievements')->group(function(){
+    Route::get('/',[AchievementController::class, 'list']);
+    Route::post('/add',[AchievementController::class, 'add'])->middleware('auth:sanctum');
+    Route::get('/player',[AchievementController::class, 'player']);
+    Route::get('/check',[AchievementController::class, 'check'])->middleware('auth:sanctum');
 });
