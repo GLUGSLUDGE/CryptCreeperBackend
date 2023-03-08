@@ -1,0 +1,627 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Crypt Creeper",
+        "description": "API functions for Crypt Creeper.",
+        "contact": {
+            "email": "glugsludge@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/achievements": {
+            "get": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Shows an index of achievments",
+                "description": "Display a listing of the resource.\nShows a list of all the Achievements in the database.",
+                "operationId": "9453f5a82b8d81d3dad891d723c9a47b",
+                "responses": {
+                    "200": {
+                        "description": "Shows all achievements."
+                    },
+                    "default": {
+                        "description": "An error ocurred."
+                    }
+                }
+            }
+        },
+        "/api/achievements/check": {
+            "get": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Shows whether the achievement was unlocked or not by the logged user.",
+                "description": "Display the specified resource.\nShows if the achievement has been unlocked by the user.",
+                "operationId": "c5925ece512ed34d3ee5e96a29769b7c",
+                "parameters": [
+                    {
+                        "name": "achievement_id",
+                        "in": "path",
+                        "description": "ID of the achievement.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "ID of the achievement to check",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shows if the achievement was unlocked."
+                    },
+                    "422": {
+                        "description": "Achievement entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/achievements/add": {
+            "post": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Unlocks the achievement for the logged user.",
+                "description": "Changes the specified resource.\nUnlocks the achievement for the player that is logged in.",
+                "operationId": "2f6c8eaa28cf557857bfe682caf731c3",
+                "parameters": [
+                    {
+                        "name": "achievement_id",
+                        "in": "path",
+                        "description": "ID of the achievement.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "ID of the achievement to unlock",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unlocks the achievment."
+                    },
+                    "422": {
+                        "description": "Achievement entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/achievements/player": {
+            "get": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Shows all achievements unlocked by a player.",
+                "description": "Display the specified resource.\nShows all the achievements unlocked by the player",
+                "operationId": "da67296b3bf925a97f37f5dde0c3fbdf",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the player.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "ID of the player",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shows a list of unlocked achivements."
+                    },
+                    "422": {
+                        "description": "Player entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/plays/save_points": {
+            "post": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Saves the points to the database associated with the logged in user.",
+                "description": "Saves the specified resource.\nSaves the points to the database.",
+                "operationId": "11f2609ec649f43f83b6c0aa83010eab",
+                "parameters": [
+                    {
+                        "name": "points",
+                        "in": "path",
+                        "description": "Points to save.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Points to save",
+                                "value": "900"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Points have been saved."
+                    },
+                    "422": {
+                        "description": "No points value was introduced."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/plays/get_higher_points": {
+            "get": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Shows highest score by the player.",
+                "description": "Display the specified resource.\nShows all the achievements unlocked by the player",
+                "operationId": "4d3471331003dc49c0f5ddb2aca96a1e",
+                "responses": {
+                    "200": {
+                        "description": "Shows the highest score from the logged in player."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/plays/leaderboards": {
+            "get": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Shows the 10 highest ranked players",
+                "description": "Display the specified resource.\nShows the top 10 players",
+                "operationId": "36bb0ed976e889fb023cf80535377330",
+                "responses": {
+                    "200": {
+                        "description": "List of players"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/factions/leaderboard": {
+            "get": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Ranks the factions",
+                "description": "Display the specified resource.\nShows the Faction rankings.",
+                "operationId": "8c8728a9855e40a1a41992e11db7036f",
+                "responses": {
+                    "200": {
+                        "description": "List of factions"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/create": {
+            "put": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Creates a new user.",
+                "description": "Create the specified resource.\nCreates a new user.",
+                "operationId": "58a1e7e5ea2085144e7709685a657ed4",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Name of the user.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "Name for the new user",
+                                "value": "abbytorade"
+                            }
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "description": "Email of the user.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "The email for the new user",
+                                "value": "abbytorade@icloud.com"
+                            }
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "path",
+                        "description": "Password for the new user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "The password for the user",
+                                "value": "Ud345678"
+                            }
+                        }
+                    },
+                    {
+                        "name": "faction_id",
+                        "in": "path",
+                        "description": "ID of the faction to join.",
+                        "required": true,
+                        "schema": {
+                            "type": "int"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "The id for the faction to join",
+                                "value": "6"
+                            }
+                        }
+                    },
+                    {
+                        "name": "profile_pic",
+                        "in": "path",
+                        "description": "Profile picture for the new user",
+                        "required": true,
+                        "schema": {
+                            "type": "int"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "The picture in base64",
+                                "value": "(base64 picture)"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User was created."
+                    },
+                    "422": {
+                        "description": "Info entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/login": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Creates a new token for the user.",
+                "description": "Create the specified resource.\nCreates a new token for the user.",
+                "operationId": "9f6f4aca790a5229fb638e798623c6e0",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Name of the user.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "Name of the user",
+                                "value": "abbytorade"
+                            }
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "path",
+                        "description": "Password of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "The password for the user",
+                                "value": "Ud345678"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Token was created."
+                    },
+                    "422": {
+                        "description": "Info entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/getUserData": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Retrieves all the data from the logged in user.",
+                "description": "Retrieves the specified resource.\nGets all the data from the logged in user.",
+                "operationId": "8eb5171f290d295a105473531b117d9d",
+                "responses": {
+                    "200": {
+                        "description": "All data from the user"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/getTop8": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Retrieves the top 8 plays from the user.",
+                "description": "Retrieves the specified resource.\nGets the best 8 scores from the user.",
+                "operationId": "0b21c163e41ba039b2076ba1b0351c5d",
+                "responses": {
+                    "200": {
+                        "description": "List of plays from the user"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/logout": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Logs out the user by deleting the token used.",
+                "description": "Destroys the specified resource.\nLogs out an user by deleting the token used.",
+                "operationId": "d52b7004aad9cc11ac927b616ad9c1f2",
+                "responses": {
+                    "200": {
+                        "description": "The token was deleted"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/change-name": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Changes the name of the user.",
+                "description": "Changes the specified resource.\nChanges the username of the logged in user.",
+                "operationId": "81503a646abdc1d4c6420f56856c9dd9",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Name of the user.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "New name for the user",
+                                "value": "abbytorade"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Name was changed successfully "
+                    },
+                    "400": {
+                        "description": "Name is not valid"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/change-password": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Changes the name of the user.",
+                "description": "Changes the specified resource.\nChanges the password of the logged in user.",
+                "operationId": "157894b6e5270c75e20d2661b242e883",
+                "parameters": [
+                    {
+                        "name": "password",
+                        "in": "path",
+                        "description": "Password of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "Old password",
+                                "value": "Ud345678"
+                            }
+                        }
+                    },
+                    {
+                        "name": "new_password",
+                        "in": "path",
+                        "description": "New pasword for the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "New password",
+                                "value": "876543dU"
+                            }
+                        }
+                    },
+                    {
+                        "name": "repeat_password",
+                        "in": "path",
+                        "description": "Repeat new pasword for the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "New password (repeated)",
+                                "value": "876543dU"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Name was changed successfully "
+                    },
+                    "400": {
+                        "description": "Password is not valid"
+                    },
+                    "401": {
+                        "description": "Passwords do not match"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/change-photo": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Changes the photo of the user.",
+                "description": "Changes the specified resource.\nChanges the profile picture of the logged in user.",
+                "operationId": "7afea566f26880f1946658936e89d77b",
+                "parameters": [
+                    {
+                        "name": "photo",
+                        "in": "path",
+                        "description": "Photo of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "Image in base64",
+                                "value": "(base64image)"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Photo was changed successfully "
+                    },
+                    "400": {
+                        "description": "Photo is not valid"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/user/delete-user": {
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Deletes the user.",
+                "description": "Deletes the specified resource.\nDeletes the user associated with the profile.",
+                "operationId": "44616ea18fecf30f57fb33c3254b71d9",
+                "parameters": [
+                    {
+                        "name": "password",
+                        "in": "path",
+                        "description": "Password of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "string": {
+                                "summary": "Password of the user",
+                                "value": "Ud345678"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User was deleted"
+                    },
+                    "400": {
+                        "description": "Password is not valid"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        }
+    }
+}
