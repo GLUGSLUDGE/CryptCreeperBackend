@@ -1,0 +1,107 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Achievements",
+        "description": "Achievement functions for Crypt Creeper.",
+        "contact": {
+            "email": "glugsludge@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/achievements": {
+            "get": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Shows an index of achievments",
+                "description": "Display a listing of the resource.\nShows a list of all the Achievements in the database.",
+                "operationId": "9453f5a82b8d81d3dad891d723c9a47b",
+                "responses": {
+                    "200": {
+                        "description": "Shows all achievements."
+                    },
+                    "default": {
+                        "description": "An error ocurred."
+                    }
+                }
+            }
+        },
+        "/api/achievements/check": {
+            "get": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Shows whether the achievement was unlocked or not by the logged user.",
+                "description": "Display the specified resource.\nShows if the achievement has been unlocked by the user.",
+                "operationId": "c5925ece512ed34d3ee5e96a29769b7c",
+                "parameters": [
+                    {
+                        "name": "achievement_id",
+                        "in": "path",
+                        "description": "ID of the achievement.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "ID of the achievement to check",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shows if the achievement was unlocked."
+                    },
+                    "422": {
+                        "description": "Achievement entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/achievements/add": {
+            "post": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Unlocks the achievement for the logged user.",
+                "description": "Display the specified resource.\nMuestra el registro solicitado",
+                "operationId": "2f6c8eaa28cf557857bfe682caf731c3",
+                "parameters": [
+                    {
+                        "name": "achievement_id",
+                        "in": "path",
+                        "description": "ID of the achievement.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "ID of the achievement to unlock",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Unlocks the achievment."
+                    },
+                    "422": {
+                        "description": "Achievement entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        }
+    }
+}
