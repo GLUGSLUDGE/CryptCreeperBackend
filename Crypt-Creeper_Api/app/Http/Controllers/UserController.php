@@ -11,6 +11,9 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Models\Faction;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMail;
 
 class UserController extends Controller
 {
@@ -55,6 +58,14 @@ class UserController extends Controller
             try {
                 $user->save();
                 $token = $user->createToken($user->name);
+                $faction = DB::table('factions')
+                            ->join('users', 'factions.id', '=', 'users.faction_id')
+                            ->where('users.id', '=', $user->id,)
+                            ->select('factions.name')
+                            ->first()
+                            ->name;
+                
+                Mail::to($user->email)->send(new WelcomeMail($user->name, $faction));
             } catch(Exception $e) {
                 return response([
                     'message' => 'An error has ocurred trying to create an user'
