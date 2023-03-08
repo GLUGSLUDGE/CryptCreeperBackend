@@ -11,6 +11,37 @@ use App\Models\Play;
 
 class PlayController extends Controller
 {
+    /**
+     * Saves the specified resource.
+     * Saves the points to the database.
+     * @param  int  $points
+     * @return \Illuminate\Http\Response
+     * @OA\Post(
+     *     path="/api/plays/save_points",
+     *     tags={"plays"},
+     *     summary="Saves the points to the database associated with the logged in user.",
+     *     @OA\Parameter(
+     *         description="Points to save.",
+     *         in="path",
+     *         name="points",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="int", value="900", summary="Points to save")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Points have been saved."
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="No points value was introduced."
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function save_points(Request $request) {
         $json = $request->getContent();
         $data = json_decode($json);
@@ -40,21 +71,65 @@ class PlayController extends Controller
         return response([
             'message' => 'Points saved correctly',
             'Points' => $play
-        ]);
+        ], 200);
     }
-//  GET HIGHER POINTS FROM AN USER
+/**
+     * Display the specified resource.
+     * Shows all the achievements unlocked by the player
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/plays/get_higher_points",
+     *     tags={"plays"},
+     *     summary="Shows highest score by the player.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Shows the highest score from the logged in player."
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function get_higher_points(Request $request) {
-        $user = $request->user();
-        $maxPoints = Play::select(DB::raw('MAX(points) as SCORE'))
-            ->where('user_id', $user->id)
-            ->get();
-
-        return response([
-            'MAXSCORE' => $maxPoints
-        ]);
+        try{
+            $user = $request->user();
+            $maxPoints = Play::select(DB::raw('MAX(points) as SCORE'))
+                ->where('user_id', $user->id)
+                ->get();
+    
+            return response([
+                'MAXSCORE' => $maxPoints
+            ], 200);
+        } catch(Exception $e){
+            return response([
+                'message' => "an error has occurred"
+            ], 500);
+        }
+        
         
     }
     //abby - Get top 10 players
+    /**
+     * Display the specified resource.
+     * Shows the top 10 players
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/plays/leaderboards",
+     *     tags={"plays"},
+     *     summary="Shows the 10 highest ranked players",
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of players"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function leaderboard(){
         try{
             $plays = DB::table('plays')
@@ -65,16 +140,35 @@ class PlayController extends Controller
             ->orderBy('points', 'desc')
             ->limit(10)
             ->get();
+            return response([
+                'LEADERBOARD' => $plays
+            ]);
         }catch(Exception $e){
             return response([
                 'message' => "There was an error retrieving the leaderboard."
             ], 500); 
         }
-        return response([
-            'LEADERBOARD' => $plays
-        ]);
     }
     //abby - Faction leaderboards
+    /**
+     * Display the specified resource.
+     * Shows the Faction rankings.
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     * @OA\Get(
+     *     path="/api/factions/leaderboard",
+     *     tags={"plays"},
+     *     summary="Ranks the factions",
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of factions"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function factionleaderboard(){
         try {
             $plays = DB::table('plays')

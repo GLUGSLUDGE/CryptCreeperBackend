@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\DB;
 /**
  * @OA\Info(
  *      version="1.0.0", 
- *      title="Achievements",
- *      description="Achievement functions for Crypt Creeper.",
+ *      title="Crypt Creeper",
+ *      description="API functions for Crypt Creeper.",
  *      @OA\Contact(
  *          email="glugsludge@gmail.com"
  *      ),

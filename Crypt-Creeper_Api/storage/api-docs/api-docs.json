@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "Achievements",
-        "description": "Achievement functions for Crypt Creeper.",
+        "title": "Crypt Creeper",
+        "description": "API functions for Crypt Creeper.",
         "contact": {
             "email": "glugsludge@gmail.com"
         },
@@ -71,7 +71,7 @@
                     "achievements"
                 ],
                 "summary": "Unlocks the achievement for the logged user.",
-                "description": "Display the specified resource.\nMuestra el registro solicitado",
+                "description": "Changes the specified resource.\nUnlocks the achievement for the player that is logged in.",
                 "operationId": "2f6c8eaa28cf557857bfe682caf731c3",
                 "parameters": [
                     {
@@ -96,6 +96,136 @@
                     },
                     "422": {
                         "description": "Achievement entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/achievements/player": {
+            "get": {
+                "tags": [
+                    "achievements"
+                ],
+                "summary": "Shows all achievements unlocked by a player.",
+                "description": "Display the specified resource.\nShows all the achievements unlocked by the player",
+                "operationId": "da67296b3bf925a97f37f5dde0c3fbdf",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "ID of the player.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "ID of the player",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shows a list of unlocked achivements."
+                    },
+                    "422": {
+                        "description": "Player entered was invalid."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/plays/save_points": {
+            "post": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Saves the points to the database associated with the logged in user.",
+                "description": "Saves the specified resource.\nSaves the points to the database.",
+                "operationId": "11f2609ec649f43f83b6c0aa83010eab",
+                "parameters": [
+                    {
+                        "name": "points",
+                        "in": "path",
+                        "description": "Points to save.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Points to save",
+                                "value": "900"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Points have been saved."
+                    },
+                    "422": {
+                        "description": "No points value was introduced."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/plays/get_higher_points": {
+            "get": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Shows highest score by the player.",
+                "description": "Display the specified resource.\nShows all the achievements unlocked by the player",
+                "operationId": "4d3471331003dc49c0f5ddb2aca96a1e",
+                "responses": {
+                    "200": {
+                        "description": "Shows the highest score from the logged in player."
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/plays/leaderboards": {
+            "get": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Shows the 10 highest ranked players",
+                "description": "Display the specified resource.\nShows the top 10 players",
+                "operationId": "36bb0ed976e889fb023cf80535377330",
+                "responses": {
+                    "200": {
+                        "description": "List of players"
+                    },
+                    "default": {
+                        "description": "An error occurred."
+                    }
+                }
+            }
+        },
+        "/api/factions/leaderboard": {
+            "get": {
+                "tags": [
+                    "plays"
+                ],
+                "summary": "Ranks the factions",
+                "description": "Display the specified resource.\nShows the Faction rankings.",
+                "operationId": "8c8728a9855e40a1a41992e11db7036f",
+                "responses": {
+                    "200": {
+                        "description": "List of factions"
                     },
                     "default": {
                         "description": "An error occurred."
