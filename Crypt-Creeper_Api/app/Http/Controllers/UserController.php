@@ -18,6 +18,74 @@ use App\Mail\WelcomeMail;
 class UserController extends Controller
 {
 //  CREAR CUENTA
+    /**
+     * Create the specified resource.
+     * Creates a new user.
+     * @param string  $name
+     * @param string $email
+     * @param string $password
+     * @param string profile_pic
+     * @param int faction_id
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Put(
+     *     path="/api/user/create",
+     *     tags={"user"},
+     *     summary="Creates a new user.",
+     *     @OA\Parameter(
+     *         description="Name of the user.",
+     *         in="path",
+     *         name="name",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="abbytorade", summary="Name for the new user")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Email of the user.",
+     *         in="path",
+     *         name="email",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="abbytorade@icloud.com", summary="The email for the new user")
+     *     ),
+     *      @OA\Parameter(
+     *         description="Password for the new user",
+     *         in="path",
+     *         name="password",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="Ud345678", summary="The password for the user")
+     *     ),
+     *      @OA\Parameter(
+     *         description="ID of the faction to join.",
+     *         in="path",
+     *         name="faction_id",
+     *         required=true,
+     *         @OA\Schema(type="int"),
+     *         @OA\Examples(example="int", value="6", summary="The id for the faction to join")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Profile picture for the new user",
+     *         in="path",
+     *         name="profile_pic",
+     *         required=true,
+     *         @OA\Schema(type="int"),
+     *         @OA\Examples(example="string", value="(base64 picture)", summary="The picture in base64")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User was created."
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Info entered was invalid."
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function create(Request $request) {
         $json = $request->getContent();
         $data = json_decode($json);
@@ -69,7 +137,7 @@ class UserController extends Controller
             } catch(Exception $e) {
                 return response([
                     'message' => 'An error has ocurred trying to create an user'
-                ]);
+                ], 500);
             }
             
             return response([
@@ -81,6 +149,47 @@ class UserController extends Controller
     }
 
 //  INICIAR SESIÓN
+    /**
+     * Create the specified resource.
+     * Creates a new token for the user.
+     * @param string  $name
+     * @param string $password
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Post(
+     *     path="/api/user/login",
+     *     tags={"user"},
+     *     summary="Creates a new token for the user.",
+     *     @OA\Parameter(
+     *         description="Name of the user.",
+     *         in="path",
+     *         name="name",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="abbytorade", summary="Name of the user")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Password of the user",
+     *         in="path",
+     *         name="password",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="Ud345678", summary="The password for the user")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Token was created."
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Info entered was invalid."
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function login(Request $request) {
         $json = $request->getContent();
         $data = json_decode($json);
@@ -96,13 +205,11 @@ class UserController extends Controller
             ], 422);
         } else {
             try {
-                
                 $user = User::where('name', 'like', $data->name)->firstOrFail();
-
                 if(!Hash::check($data->password, $user->password)) {
                     return response([
                         'message' => 'The user or the password is incorrrect'
-                    ]);
+                    ], 422);
                 } else {
                     $user->tokens()->delete();
                     $token = $user->createToken($user->name);
@@ -111,55 +218,159 @@ class UserController extends Controller
                         'Token' => $token->plainTextToken,
                         'message' => 'Token created successfully',
                         'User' => $user
-                    ]);
+                    ], 201);
                 }
 
             } catch(\Exception $e) {
                 return response([
-                    "message" => "The user or the password are incorrect"
-                ]);
+                    "message" => "There was an error with the server"
+                ], 500);
             }
         }
         return response()->json($data, 201);
     }  
 // DATOS DE USUARIO
+/**
+     * Retrieves the specified resource.
+     * Gets all the data from the logged in user.
+ 
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Get(
+     *     path="/api/user/getUserData",
+     *     tags={"user"},
+     *     summary="Retrieves all the data from the logged in user.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="All data from the user"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function getUserData (Request $request){
-
-        $user = $request->user();
-        return response()->json([
-            'name'=> $user->name,
-            'profile_pic' =>$user-> profile_pic,
-            'faction_id' => $user-> faction_id
-        ]);
-
+        try{
+            $user = $request->user();
+            return response()->json([
+                'name'=> $user->name,
+                'profile_pic' =>$user-> profile_pic,
+                'faction_id' => $user-> faction_id
+            ], 200);
+        }catch(Exception $e){
+            return response()->json([
+                'message'=> "there was an error with the server",
+            ], 500);
+        }
     }
 
     // USER TOP SCORES
-    public function getTop8(Request $request){
-        
-        $topScores = DB::table('plays')
+    /**
+     * Retrieves the specified resource.
+     * Gets the best 8 scores from the user.
+ 
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Get(
+     *     path="/api/user/getTop8",
+     *     tags={"user"},
+     *     summary="Retrieves the top 8 plays from the user.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of plays from the user"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
+    public function getTop8(Request $request) {
+        try{
+            $topScores = DB::table('plays')
             ->select('user_id', 'points')
             ->orderByDesc('points')
             ->limit(8)
             ->get();
 
-    return response()->json([
-        'score '=> $topScores]);
-    
-
+        return response()->json([
+            'score '=> $topScores]
+        , 200);
+        } catch (Exception $e){
+            return response()->json([
+                "message"=>"there was an error with the server"
+            ], 500);
+        }
+        
     }
 
 //  CERRAR SESION
+/**
+     * Destroys the specified resource.
+     * Logs out an user by deleting the token used.
+ 
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Post(
+     *     path="/api/user/logout",
+     *     tags={"user"},
+     *     summary="Logs out the user by deleting the token used.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="The token was deleted"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
     public function logout(Request $request) {
+        try{
+            $request->user()->tokens()->delete();
+            return response()->json(['message' => 'closed session'], 200);
+        } catch(Exception $e){
+            response()->json(['message' => 'There was an error with the server'], 500);
+        }
         
-        $request->user()->tokens()->delete();
-        return response()->json(['message' => 'closed session']);
         
     }
    
 //  CAMBIAR NOMBRE
-    public function changeName(Request $request)
-    {
+/**
+     * Changes the specified resource.
+     * Changes the username of the logged in user.
+     * @param string $name
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Post(
+     *     path="/api/user/change-name",
+     *     tags={"user"},
+     *     summary="Changes the name of the user.",
+     *      @OA\Parameter(
+     *         description="Name of the user.",
+     *         in="path",
+     *         name="name",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="abbytorade", summary="New name for the user")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Name was changed successfully "
+     *     ),
+     *      @OA\Response(
+     *         response=400,
+     *         description="Name is not valid"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
+    public function changeName(Request $request){
         $json = $request->getContent();
         $data = json_decode($json);
 
@@ -181,14 +392,67 @@ class UserController extends Controller
         {
             return response([
                 "message" => "An error has occurred"
-            ]);
+            ],500);
         }
-       return response()->json(['message' => 'Name updated successfully']);
+       return response()->json(['message' => 'Name updated successfully'],200);
     }
 
 //  CAMBIAR CONTRSEÑA
-    public function changePassword(Request $request)
-    {
+/**
+     * Changes the specified resource.
+     * Changes the password of the logged in user.
+     * @param string $password
+     * @param string $new_password
+     * @param string $repeated_password
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Post(
+     *     path="/api/user/change-password",
+     *     tags={"user"},
+     *     summary="Changes the name of the user.",
+     *      @OA\Parameter(
+     *         description="Password of the user",
+     *         in="path",
+     *         name="password",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="Ud345678", summary="Old password")
+     *     ),
+     *     @OA\Parameter(
+     *         description="New pasword for the user",
+     *         in="path",
+     *         name="new_password",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="876543dU", summary="New password")
+     *     ),
+     *     @OA\Parameter(
+     *         description="Repeat new pasword for the user",
+     *         in="path",
+     *         name="repeat_password",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="876543dU", summary="New password (repeated)")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Name was changed successfully "
+     *     ),
+     *      @OA\Response(
+     *         response=400,
+     *         description="Password is not valid"
+     *     ),
+     *      @OA\Response(
+     *         response=401,
+     *         description="Passwords do not match"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
+    public function changePassword(Request $request){
         $json = $request->getContent();
         $data = json_decode($json);
 
@@ -229,15 +493,46 @@ class UserController extends Controller
         {
             return response([
                 "message" => "An error has occurred"
-            ]);
+            ], 500);
         }
 
-        return response()->json(['message' => 'Password changed correctly']);
+        return response()->json(['message' => 'Password changed correctly'], 200);
     }
 
 //  CAMBIAR FOTO
-    public function changePhoto(Request $request)
-    {
+/**
+     * Changes the specified resource.
+     * Changes the profile picture of the logged in user.
+     * @param string $photo
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Post(
+     *     path="/api/user/change-photo",
+     *     tags={"user"},
+     *     summary="Changes the photo of the user.",
+     *      @OA\Parameter(
+     *         description="Photo of the user",
+     *         in="path",
+     *         name="photo",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="(base64image)", summary="Image in base64")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Photo was changed successfully "
+     *     ),
+     *      @OA\Response(
+     *         response=400,
+     *         description="Photo is not valid"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
+    public function changePhoto(Request $request){
         $json = $request->getContent();
         $data = json_decode($json);
 
@@ -274,12 +569,43 @@ class UserController extends Controller
             ]);
         }
 
-        return response()->json(['message' => 'Photo changed correctly']);
+        return response()->json(['message' => 'Photo changed correctly'], 200);
     }
 
 //  BORRAR CUENTA
-    public function deleteUser(Request $request)
-    {
+/**
+     * Deletes the specified resource.
+     * Deletes the user associated with the profile.
+     * @param string $password
+     * @return \Illuminate\Http\Response
+     * 
+     * @OA\Delete(
+     *     path="/api/user/delete-user",
+     *     tags={"user"},
+     *     summary="Deletes the user.",
+     *      @OA\Parameter(
+     *         description="Password of the user",
+     *         in="path",
+     *         name="password",
+     *         required=true,
+     *         @OA\Schema(type="string"),
+     *         @OA\Examples(example="string", value="Ud345678", summary="Password of the user")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User was deleted"
+     *     ),
+     *      @OA\Response(
+     *         response=400,
+     *         description="Password is not valid"
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="An error occurred."
+     *     )
+     * ) 
+     */
+    public function deleteUser(Request $request){
         $json = $request->getContent();
         $data = json_decode($json);
         $validator = Validator::make(json_decode($json, true),[
@@ -314,10 +640,10 @@ class UserController extends Controller
         {
             return response([
                 "message" => "An error has occurred"
-            ]);
+            ], 500);
         }
 
-        return response()->json(['message' => 'User Delete']);
+        return response()->json(['message' => 'User Delete'], 200);
     }
 
 }
