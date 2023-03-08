@@ -229,8 +229,8 @@ class UserController extends Controller
         }
         return response()->json($data, 201);
     }  
-// DATOS DE USUARIO
-/**
+//  DATOS DE USUARIO
+    /**
      * Retrieves the specified resource.
      * Gets all the data from the logged in user.
  
@@ -265,7 +265,7 @@ class UserController extends Controller
         }
     }
 
-    // USER TOP SCORES
+// USER TOP SCORES
     /**
      * Retrieves the specified resource.
      * Gets the best 8 scores from the user.
@@ -290,6 +290,7 @@ class UserController extends Controller
         try{
             $topScores = DB::table('plays')
             ->select('user_id', 'points')
+            ->where('user_id','=', $request->user()->id)
             ->orderByDesc('points')
             ->limit(8)
             ->get();
@@ -306,7 +307,7 @@ class UserController extends Controller
     }
 
 //  CERRAR SESION
-/**
+    /**
      * Destroys the specified resource.
      * Logs out an user by deleting the token used.
  
@@ -338,7 +339,7 @@ class UserController extends Controller
     }
    
 //  CAMBIAR NOMBRE
-/**
+    /**
      * Changes the specified resource.
      * Changes the username of the logged in user.
      * @param string $name
@@ -398,7 +399,7 @@ class UserController extends Controller
     }
 
 //  CAMBIAR CONTRSEÑA
-/**
+    /**
      * Changes the specified resource.
      * Changes the password of the logged in user.
      * @param string $password
@@ -500,7 +501,7 @@ class UserController extends Controller
     }
 
 //  CAMBIAR FOTO
-/**
+    /**
      * Changes the specified resource.
      * Changes the profile picture of the logged in user.
      * @param string $photo
@@ -548,13 +549,15 @@ class UserController extends Controller
         {
             $user = $request->user();
             $image_data = $data->profile_pic;
+
+            // Crea un archivo temporal
             $temp_file = tempnam(sys_get_temp_dir(), 'img');
             file_put_contents($temp_file, base64_decode($image_data));
-            
+            // Crear un objeto UploadedFile a partir del archivo temporal
             $file = new UploadedFile($temp_file, $user->name.'.png', null, null, true);
 
             
-            
+            // Guardar los datos del archivo cargado en la base de datos y convertir la imagen a url
             $file->storeAs('public', $user->name.'.png');
             $url = Storage::url($user->name.'.png');
             $finalUrl = 'http://127.0.0.1:8000'.$url;
@@ -573,7 +576,7 @@ class UserController extends Controller
     }
 
 //  BORRAR CUENTA
-/**
+    /**
      * Deletes the specified resource.
      * Deletes the user associated with the profile.
      * @param string $password
@@ -645,5 +648,4 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User Delete'], 200);
     }
-
 }

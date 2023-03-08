@@ -185,7 +185,7 @@
                     "plays"
                 ],
                 "summary": "Shows highest score by the player.",
-                "description": "Display the specified resource.\nShows all the achievements unlocked by the player",
+                "description": "Display the specified resource.\nShows the higher score of the player",
                 "operationId": "4d3471331003dc49c0f5ddb2aca96a1e",
                 "responses": {
                     "200": {

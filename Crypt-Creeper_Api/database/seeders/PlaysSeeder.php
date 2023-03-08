@@ -18,7 +18,7 @@ class PlaysSeeder extends Seeder
     {
         for($i = 0; $i < 14; $i++){
             DB::table('plays')->insert([
-                'user_id' => random_int(3,18),
+                'user_id' => random_int(3,14),
                 'points' => random_int(1,9000)
             ]);
         }

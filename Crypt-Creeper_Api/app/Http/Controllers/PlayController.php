@@ -11,6 +11,7 @@ use App\Models\Play;
 
 class PlayController extends Controller
 {
+//  SAVE THE POINTS
     /**
      * Saves the specified resource.
      * Saves the points to the database.
@@ -73,9 +74,10 @@ class PlayController extends Controller
             'Points' => $play
         ], 200);
     }
-/**
+//  SHOW THE HIGHER SCORE OF THE PLAYER
+    /**
      * Display the specified resource.
-     * Shows all the achievements unlocked by the player
+     * Shows the higher score of the player
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * @OA\Get(

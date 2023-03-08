@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
  */
 class AchievementController extends Controller
 {
+//  SHOW ALL THE ACHIEVEMENTS
     /**
     * Display a listing of the resource.
     * Shows a list of all the Achievements in the database.
@@ -50,6 +51,7 @@ class AchievementController extends Controller
             ], 500); 
         }
     }
+//  CHECK ACHIEVEMENTS UNLOCKED
     /**
      * Display the specified resource.
      * Shows if the achievement has been unlocked by the user.
@@ -117,6 +119,7 @@ class AchievementController extends Controller
         }
         
     }
+//  UNLOCKS ACHIEVEMENT FOR THE USER
      /**
      * Changes the specified resource.
      * Unlocks the achievement for the player that is logged in.
@@ -172,6 +175,7 @@ class AchievementController extends Controller
             'message' => 'Achievement added to the user successfuly.'
         ], 200); 
     }
+//  SHOW ACHIEVEMENTS FROM AN USER
      /**
      * Display the specified resource.
      * Shows all the achievements unlocked by the player
