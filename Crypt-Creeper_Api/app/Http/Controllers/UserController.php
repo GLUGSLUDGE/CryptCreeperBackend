@@ -55,16 +55,16 @@ class UserController extends Controller
             $file->storeAs('public', $user->name.'.png');
             $user->profile_pic = $finalUrl;
 
+            
             try {
                 $user->save();
                 $token = $user->createToken($user->name);
                 $faction = DB::table('factions')
-                            ->join('users', 'factions.id', '=', 'users.faction_id')
-                            ->where('users.id', '=', $user->id,)
-                            ->select('factions.name')
-                            ->first()
-                            ->name;
-                
+                    ->join('users', 'factions.id', '=', 'users.faction_id')
+                    ->where('users.id', '=', $user->id,)
+                    ->select('factions.name')
+                    ->first()
+                    ->name;
                 Mail::to($user->email)->send(new WelcomeMail($user->name, $faction));
             } catch(Exception $e) {
                 return response([
