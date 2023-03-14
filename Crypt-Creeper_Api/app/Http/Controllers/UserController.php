@@ -380,7 +380,7 @@ class UserController extends Controller
         ]);
 
         if ($validator ->fails()){
-            return response()->json(['Erros' => $validator->errors()],400);
+            return response()->json(['Errors' => $validator->errors()],400);
         } 
 
         try
@@ -617,7 +617,7 @@ class UserController extends Controller
 
         if ($validator ->fails())
         {
-            return response()->json(['Erros' => $validator ->errors()],400);
+            return response()->json(['Errors' => $validator ->errors()],400);
         }
 
         try
