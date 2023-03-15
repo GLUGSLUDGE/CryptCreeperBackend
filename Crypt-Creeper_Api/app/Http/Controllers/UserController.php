@@ -265,7 +265,7 @@ class UserController extends Controller
         }
     }
 
-// USER TOP SCORES
+//  USER TOP SCORES
     /**
      * Retrieves the specified resource.
      * Gets the best 8 scores from the user.
@@ -289,21 +289,20 @@ class UserController extends Controller
     public function getTop8(Request $request) {
         try{
             $topScores = DB::table('plays')
-            ->select('user_id', 'points')
+            ->select('points')
             ->where('user_id','=', $request->user()->id)
             ->orderByDesc('points')
             ->limit(8)
             ->get();
 
-        return response()->json([
-            'score '=> $topScores]
-        , 200);
+            return response()->json([
+                'score'=> $topScores
+            ], 200);
         } catch (Exception $e){
             return response()->json([
                 "message"=>"there was an error with the server"
             ], 500);
         }
-        
     }
 
 //  CERRAR SESION
