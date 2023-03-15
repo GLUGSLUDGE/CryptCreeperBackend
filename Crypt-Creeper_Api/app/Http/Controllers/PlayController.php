@@ -137,7 +137,7 @@ class PlayController extends Controller
             $plays = DB::table('plays')
             ->join('users', 'plays.user_id', '=', 'users.id')
             ->join('factions', 'users.faction_id', '=', "factions.id")
-            ->select(DB::raw('user_id,MAX(points) as points'), 'users.name as username', 'factions.name as faction')
+            ->select(DB::raw('user_id,MAX(points) as points'),'users.profile_pic as photo','users.name as username', 'factions.name as faction')
             ->groupBy('user_id')
             ->orderBy('points', 'desc')
             ->limit(10)
@@ -178,6 +178,7 @@ class PlayController extends Controller
             ->join('factions', 'users.faction_id', '=', "factions.id")
             ->select(DB::raw('faction_id,SUM(points) as points'), 'factions.name')
             ->groupBy('factions.id')
+            ->orderby('points','desc')
             ->get();
         } catch(Exception $e){
             return response([
